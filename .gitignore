@@ -19,3 +19,14 @@
 
 # Go workspace file
 go.work
+
+#Go Sum file
+go.sum
+
+# Editor settings and backup files
+*.swp
+*~
+.*.swp
+.*.swo
+.idea/
+.vscode/
