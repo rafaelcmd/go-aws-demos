@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"log"
@@ -19,13 +17,9 @@ func main() {
 
 	basics := BucketBasics{S3Client: s3Client}
 
-	buckets, err := basics.ListBuckets()
-	if err != nil {
-		log.Fatalf("Couldn't list buckets for your account. Here's why: %v", err)
-	}
+	bucketName := "bucket-test-aws-sdk-go-rafaelcmd"
 
-	fmt.Println("Buckets:")
-	for _, bucket := range buckets {
-		fmt.Printf("* %s\n", aws.ToString(bucket.Name))
-	}
+	basics.ListBuckets()
+	basics.CreateBucket(bucketName)
+	basics.DeleteBucket(bucketName)
 }
