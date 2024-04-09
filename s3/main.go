@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"log"
+	"os"
 )
 
 func main() {
@@ -17,9 +19,14 @@ func main() {
 
 	basics := BucketBasics{S3Client: s3Client}
 
-	bucketName := "bucket-test-aws-sdk-go-rafaelcmd"
+	//bucketName := "bucket-test-aws-sdk-go-rafaelcmd"
 
 	basics.ListBuckets()
-	basics.CreateBucket(bucketName)
-	basics.DeleteBucket(bucketName)
+	//basics.CreateBucket(bucketName)
+	//basics.DeleteBucket(bucketName)
+
+	cloudFormationSvc := cloudformation.NewFromConfig(cfg)
+	templateBody, err := os.ReadFile("create_bucket.yaml")
+
+	basics.CreateBucketWithCloudFormation(cloudFormationSvc, templateBody)
 }

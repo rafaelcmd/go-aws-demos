@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
+	types2 "github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"log"
@@ -53,4 +56,16 @@ func (basics BucketBasics) DeleteBucket(bucketName string) {
 	} else {
 		log.Printf("Bucket %s deleted successfully", bucketName)
 	}
+}
+
+func (basics BucketBasics) CreateBucketWithCloudFormation(client *cloudformation.Client, templateBody []byte) {
+	var result, err = client.CreateStack(context.TODO(), &cloudformation.CreateStackInput{
+		StackName:    aws.String("S3BucketTestStack"),
+		TemplateBody: aws.String(string(templateBody)),
+		Capabilities: []types2.Capability{"CAPABILITY_NAMED_IAM"},
+	})
+	if err != nil {
+		log.Printf("Couldn't create stack. Here's why: %v\n", err)
+	}
+	log.Printf("Stack %s created successfully", *result.StackId)
 }
