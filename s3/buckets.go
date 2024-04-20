@@ -12,6 +12,7 @@ import (
 
 type BucketBasics struct {
 	S3Client *s3.Client
+	CFClient *cloudformation.Client
 }
 
 func (basics BucketBasics) ListBuckets() []types.Bucket {
@@ -58,9 +59,21 @@ func (basics BucketBasics) DeleteBucket(bucketName string) {
 	}
 }
 
-func (basics BucketBasics) CreateBucketWithCloudFormation(client *cloudformation.Client, templateBody []byte) {
-	var result, err = client.CreateStack(context.TODO(), &cloudformation.CreateStackInput{
+func (basics BucketBasics) CreateBucketWithCloudFormation(templateBody []byte) {
+	var result, err = basics.CFClient.CreateStack(context.TODO(), &cloudformation.CreateStackInput{
 		StackName:    aws.String("S3BucketTestStack"),
+		TemplateBody: aws.String(string(templateBody)),
+		Capabilities: []types2.Capability{"CAPABILITY_NAMED_IAM"},
+	})
+	if err != nil {
+		log.Printf("Couldn't create stack. Here's why: %v\n", err)
+	}
+	log.Printf("Stack %s created successfully", *result.StackId)
+}
+
+func (basics BucketBasics) CreateBucketWithStaticWebSite(templateBody []byte) {
+	var result, err = basics.CFClient.CreateStack(context.TODO(), &cloudformation.CreateStackInput{
+		StackName:    aws.String("S3BucketStaticWebSite"),
 		TemplateBody: aws.String(string(templateBody)),
 		Capabilities: []types2.Capability{"CAPABILITY_NAMED_IAM"},
 	})

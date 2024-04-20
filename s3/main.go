@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"log"
 	"os"
 )
@@ -15,18 +14,21 @@ func main() {
 		log.Fatalf("Couldn't load configuration: %v", err)
 	}
 
-	s3Client := s3.NewFromConfig(cfg)
-
-	basics := BucketBasics{S3Client: s3Client}
+	//s3Client := s3.NewFromConfig(cfg)
+	//s3Basics := BucketBasics{S3Client: s3Client}
 
 	//bucketName := "bucket-test-aws-sdk-go-rafaelcmd"
 
-	basics.ListBuckets()
-	//basics.CreateBucket(bucketName)
-	//basics.DeleteBucket(bucketName)
+	//s3Basics.ListBuckets()
+	//s3Basics.CreateBucket(bucketName)
+	//s3Basics.DeleteBucket(bucketName)
 
-	cloudFormationSvc := cloudformation.NewFromConfig(cfg)
-	templateBody, err := os.ReadFile("create_bucket.yaml")
+	cfClient := cloudformation.NewFromConfig(cfg)
+	cfBasics := BucketBasics{CFClient: cfClient}
 
-	basics.CreateBucketWithCloudFormation(cloudFormationSvc, templateBody)
+	//templateBody, err := os.ReadFile("create_bucket.yaml")
+	staticWebSiteTemplate, err := os.ReadFile("create_bucket_static_website.yaml")
+
+	//cfBasics.CreateBucketWithCloudFormation(staticWebSiteTemplate)
+	cfBasics.CreateBucketWithStaticWebSite(staticWebSiteTemplate)
 }
