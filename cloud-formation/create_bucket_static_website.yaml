@@ -1,0 +1,26 @@
+Resources:
+  CloudFormationExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - cloudformation.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: "AllowS3Operations"
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: 's3:*'
+                Resource: '*'
+
+  S3BucketWithStaticWebSite:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: 'bucket-with-static-website-rafaelcmd'

@@ -1,6 +1,6 @@
 module github.com/rafaelcmd/go-aws-demos
 
-go 1.21.0
+go 1.22.3
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.27.11
